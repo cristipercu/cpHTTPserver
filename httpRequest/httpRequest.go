@@ -1,11 +1,15 @@
 package httprequest
 
-import "bytes"
+import (
+	"bytes"
+	"strings"
+)
 
 type HttpRequest struct {
   Method string
   Uri string
   HttpVersion string
+  Accept []string
 }
 
 
@@ -31,5 +35,13 @@ func (r *HttpRequest) parse(data []byte) {
 
   if len(words) > 2 {
     r.HttpVersion = string(words[2])
+  }
+
+  for _, line := range lines{
+    if strings.HasPrefix(string(line), "Accept:") {
+      trimmedAccept := strings.TrimPrefix(string(line), "Accept: ")
+      accepts := strings.Split(trimmedAccept, ",")
+      r.Accept = append(r.Accept, accepts...)
+    }
   }
 }

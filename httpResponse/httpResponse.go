@@ -55,9 +55,20 @@ func (hr *HttpResponse) handleMethod() {
 }
 
 func (hr *HttpResponse) handleGet() {
-  hr.StatusCode = 200
-  hr.StatusCodeText = hr.statusToString()
-  
+  canAccept := false
+  for _, contentType := range hr.Request.Accept {
+    if contentType == "text/html" || contentType == "*/*"{
+      canAccept = true
+      break
+    }
+  }
+
+  if canAccept {
+    hr.StatusCode = 200
+    hr.StatusCodeText = hr.statusToString()
+  } else {
+    hr.handleNotImplemented()
+  }
 }
 
 func (hr *HttpResponse) handleNotImplemented() {
